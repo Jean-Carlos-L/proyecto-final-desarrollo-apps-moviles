@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+        <meta name="color-scheme" content="light dark">
+        <link rel="stylesheet" href="../css/index.css">
+        <link rel="stylesheet" href="../css/login.css">
+        <title>Tasks</title>
+
+        <link rel="stylesheet" href="../css/onsenui/onsenui.min.css">
+        <link rel="stylesheet" href="../css/onsenui/onsenui-core.min.css">
+        <link rel="stylesheet" href="../css/onsenui/onsen-css-components.min.css">
+    </head>
+    <body>
+        <main>
+            <ons-page>
+                <ons-list id="list_tasks">
+                    <ons-list-header>Tasks </ons-list-header>
+                </ons-list>
+                <ons-fab position="bottom right">
+                    <ons-icon icon="md-plus" id="button-task-new"></ons-icon>
+                </ons-fab>
+            </ons-page>
+
+            <ons-modal direction="up">
+                <form class="form-task">
+                    <div class="form-group">
+                        <ons-input id="task-title" modifier="underbar" placeholder="Title task" type="text" float></ons-input>
+                    </div>
+                    <div class="form-group">
+                        <ons-input id="task-description" modifier="underbar" placeholder="Description" type="text" float></ons-input>
+                    </div>
+                    <div class="form-group">
+                        <ons-input id="task-date" modifier="underbar" placeholder="Date" type="date" float></ons-input>
+                    </div>
+                    <div class="mb-1">
+                        <ons-button type="submit" id="button-add-task" style="text-transform: none;">Save task</ons-button>
+                    </div>
+                </form>
+            </ons-modal>
+        </main>
+        <script src="../cordova.js"></script>
+        <script src="../js/onsenui/onsenui.min.js"></script>
+        <script src="../js/tasks.js"></script>
+    </body>
+</html>
