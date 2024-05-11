@@ -2,10 +2,7 @@ function handleCreateUser() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
   const username = document.getElementById("username").value;
-  console.log("first", email);
   createUser({ email, password, username });
-  alert("User created successfully");
-  window.location.href = "/pages/login.html";
 }
 
 document
@@ -13,7 +10,26 @@ document
   .addEventListener("click", handleCreateUser);
 
 function createUser({ email, password, username }) {
-  const users = JSON.parse(localStorage.getItem("users")) || [];
-  users.push({ email, password, username });
-  localStorage.setItem("users", JSON.stringify(users));
+  createUserService({ email, password, username });
 }
+
+const createUserService = async ({ email, password, username }) => {
+  try {
+    const URL = "http://localhost:3050/api/v1/users";
+    const response = await fetch(URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password, username }),
+    });
+    const { message } = await response.json();
+    console.log("message", message);
+    if (message === "User created successfully") {
+      alert("User created successfully");
+    }
+  } catch (error) {
+    console.log("error", error);
+    alert(`${error.response.data.message}`);
+  }
+};
