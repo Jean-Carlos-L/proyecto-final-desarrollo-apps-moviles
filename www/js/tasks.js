@@ -27,10 +27,8 @@ async function showTasks(tasks) {
                 console.log(task);
                 newElement.textContent = task.title;
                 // Crear el botón de modificar
-                var editButton = document.createElement('ons-toolbar-button');
-                editButton.textContent = 'Modificar';
-                // Aplicar estilos para posicionar el botón a la derecha
-                editButton.setAttribute('modifier', 'quiet');
+                var editButton = document.createElement('ons-icon');
+                editButton.setAttribute('icon', 'create-outline'); 
                 editButton.onclick = function() {
                     // Aquí puedes agregar la lógica para modificar la tarea
                     console.log('Modificando tarea:', task);
