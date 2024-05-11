@@ -42,6 +42,15 @@ async function showTasks(tasks) {
                 iconContainer.style.justifyContent = 'space-between'; // Para alinear los iconos a la derecha
                 iconContainer.style.alignItems = 'center'; // Para centrar verticalmente los iconos
  
+                //crear el boton para completar la tarea 
+                var stateButton = document.createElement('ons-icon');
+                stateButton.setAttribute('icon', 'fa-check');
+                stateButton.style.color = 'green';
+                stateButton.style.marginRight = '10px'; // Para separar los botones
+                stateButton.onclick = function() {
+                    handleCompletTask(task.id);
+                };
+
                 // Crear el botón de modificar
                 var updateButton = document.createElement('ons-icon');
                 updateButton.setAttribute('icon', 'fa-cog');
@@ -73,6 +82,7 @@ async function showTasks(tasks) {
                 };
 
                 // Agregar los botones al contenedor
+                iconContainer.appendChild(stateButton);
                 iconContainer.appendChild(updateButton);
                 iconContainer.appendChild(delbutton);
 
@@ -279,11 +289,35 @@ async function deleteTask(id){
         console.error(error);
     }
 }
-function handleDeleteTask(id){
+async function handleDeleteTask(id){
 
     if(confirm("¿Estás seguro de eliminar la tarea?")){
         deleteTask(id);
         alert("Tarea eliminada exitosamente");
+        window.location.reload();
+    }
+}
+
+async function completTask(id){
+    try {
+        const url = 'http://localhost:3050/api/v1/tasks/' + id;
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJqdWFuQGdtYWlsLmNvbSIsInVzZXJuYW1lIjoianVhbml0bzIiLCJwYXNzd29yZCI6IiQyYSQxMCR4cDhlLjN5cEtObjExM1k0Z0YvLjd1ZUR2R3QxckMvenB2cVY5b3pISWtsRTJDMmxDYklJeSIsInN0YXRlIjoxLCJpYXQiOjE3MTU0MzgyMjB9.WdseGLkZNOhppWrj23Mcd5hRxlayAGdmxJIcgtOeJtI'
+            }
+        });
+        const data = await response.json();
+        console.log(data);
+    } catch (error) {
+        console.error(error);
+    }
+}
+async function handleCompletTask(id){
+   if(confirm("¿La tarea está completada?")){
+        completTask(id);
+        alert("Tarea completada exitosamente");
         window.location.reload();
     }
 }
