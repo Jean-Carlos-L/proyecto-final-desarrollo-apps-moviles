@@ -3,20 +3,39 @@ async function login(event) {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  const user = findUserByEmail({ email, password });
+  const user = await findUserByEmail({ email, password });
 
-  if (!user) return alert("User not found");
-
-  window.location.href = "/index.html";
+  if (user) {
+    console.log("user", user);
+    localStorage.setItem("user", JSON.stringify(user));
+    window.location.href = "/index.html";
+  }
 }
 
 document.getElementById("button-sign-in").addEventListener("click", login);
 
-function findUserByEmail({ email, password }) {
-  const users = JSON.parse(localStorage.getItem("users"));
-  if (!users) return null;
-  const user = users.find((user) => user.email === email);
-  return user.password === password ? user : null;
+async function findUserByEmail({ email, password }) {
+  try {
+    const URL = "http://localhost:3050/api/v1/users/login";
+    const response = await fetch(URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+    const { user, message, token } = await response.json();
+    console.log("message", message);
+    if (message === "Incorrect password" || message === "Incorrect email") {
+      alert("Incorrect email or password");
+      return null;
+    }
+
+    return { ...user, token };
+  } catch (error) {
+    console.log("error", error);
+    alert(`${error.response.data.message}`);
+  }
 }
 
 function navigateToRegister() {

@@ -19,31 +19,45 @@
         <main>
             <ons-page>
                 <ons-toolbar>
-                    <div class="center">Sign in</div>
+                    <div class="center">Configure profile</div>
                 </ons-toolbar>
                 <ons-card>
                     <form class="form-login">
+                        <div class="form-group">
+                            <ons-input id="username" modifier="underbar" placeholder="Username" type="text" float></ons-input>
+                        </div>
+
                         <div class="form-group">
                             <ons-input id="email" modifier="underbar" placeholder="Email" type="email" float></ons-input>
                         </div>
 
                         <div class="form-group">
-                            <ons-input id="password" modifier="underbar" placeholder="Password" type="password" float></ons-input>
+                            <ons-input id="password" modifier="underbar large" placeholder="Password" type="password" float></ons-input>
+                        </div>
+
+                        <div class="form-group">
+                            <ons-select id="notification" onchange="editSelects(event)">
+                                <option value="notification_1.mp3">Note Phone</option>
+                                <option value="notification_2.mp3">Twinkle</option>
+                                <option value="notification_3.mp3">Whisper</option>
+                            </ons-select>
+                        </div>
+
+                        <div class="form-group">
+                            <ons-select id="theme" onchange="editSelects(event)">
+                                <option value="light">Light</option>
+                                <option value="dark">Dark</option>
+                            </ons-select>
                         </div>
 
                         <div class="mb-1">
-                            <ons-button id="button-sign-in" modifier="large">Sign in</ons-button>
+                            <ons-button type="submit" id="button-save" modifier="large">Save</ons-button>
                         </div>
-                        <div class="mb-1">
-                            <ons-button id="button-sign-up" modifier="large outline">Sign up</ons-button>
-                        </div>
-                    </form>
-
                 </ons-card>
             </ons-page>
         </main>
         <script src="../cordova.js"></script>
         <script src="../js/onsenui/onsenui.min.js"></script>
-        <script src="../js/login.js"></script>
+        <script src="../js/editProfileUser.js"></script>
     </body>
 </html>
