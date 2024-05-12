@@ -8,21 +8,29 @@
         <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
         <meta name="color-scheme" content="light dark">
         <link rel="stylesheet" href="css/index.css">
-        <title>Hello World</title>
+        <title>Task Ya</title>
 
         <link rel="stylesheet" href="css/onsenui/onsenui.min.css">
         <link rel="stylesheet" href="css/onsenui/onsenui-core.min.css">
         <link rel="stylesheet" href="css/onsenui/onsen-css-components.min.css">
 
-        <script type="module" src="js/verifySession.js"></script>
+        <!-- <script type="module" src="js/verifySession.js"></script> -->
     </head>
     <body>
-        <div id="deviceready" class="blink">
-            <ons-button>Aca</ons-button>
-            <a href="./pages/editProfileUser.html">Edit</a>
+        <div id="deviceready" class="blin">
+            <ons-page>
+                <ons-toolbar>
+                  <div class="center">Tab 1</div>
+                </ons-toolbar>
+              </ons-page>
         </div>
+
+        <div id="tabbar-container"></div>
+
         <script src="cordova.js"></script>
-        <script type="module" src="js/index.js"></script>
+        <script src="js/onsenui/onsenui.js"></script>
         <script src="js/onsenui/onsenui.min.js"></script>
+        <script src="js/index.js"></script>
+        <script src="js/loadTabbar.js"></script>
     </body>
 </html>
