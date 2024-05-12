@@ -1,12 +1,23 @@
-document.addEventListener("DOMContentLoaded", onDeviceReady);
+document.addEventListener('DOMContentLoaded', function() {
+    // Event listeners para los botones dentro del segmento
+    document.getElementById('tasksButton').addEventListener('click', function() {
+        clearTaskList()
+      // Mostrar tareas incompletas al hacer clic en "Tasks"
+      showTasks(1); // 1 para tareas incompletas
 
-function onDeviceReady() {
-    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    showTasks(tasks);
-}
+    });
+  
+    document.getElementById('tasksCompleteButton').addEventListener('click', function() {
+      // Mostrar tareas completadas al hacer clic en "Tasks Complete"
+      clearTaskList()
+      showTasks(2); // 2 para tareas completadas
+    });
+  
+    // Mostrar las tareas incompletas por defecto al cargar la página
+    showTasks(1);
+  });
 
-
-async function showTasks(tasks) {
+async function showTasks(type) {
     try {
         const url = 'http://localhost:3050/api/v1/tasks';
         const response = await fetch(url, {
@@ -18,89 +29,95 @@ async function showTasks(tasks) {
         });
         const data = await response.json();
         console.log(data);
-
-        var list = document.getElementById('list_tasks');
-
-        if (tasks != undefined && tasks != null && tasks.length > 0) {
-            data.data.forEach(function(task) {
-                var newElement = document.createElement("ons-list-item");
-
-                console.log(task);
-
-                var newDiv = document.createElement('div');
-                newDiv.setAttribute('class', 'left');
-                newDiv.textContent = task.title + ' - ' + task.description;
-                newElement.appendChild(newDiv);
-
-                var newDiv2 = document.createElement('div');
-                newDiv2.setAttribute('class', 'right');
-
-                // Crear un contenedor para los iconos
-                var iconContainer = document.createElement('div');
-                iconContainer.style.display = 'flex'; // Para que los iconos estén en línea
-                iconContainer.style.width= "25%"; // Para que los iconos estén en línea
-                iconContainer.style.justifyContent = 'space-between'; // Para alinear los iconos a la derecha
-                iconContainer.style.alignItems = 'center'; // Para centrar verticalmente los iconos
- 
-                //crear el boton para completar la tarea 
-                var stateButton = document.createElement('ons-icon');
-                stateButton.setAttribute('icon', 'fa-check');
-                stateButton.style.color = 'green';
-                stateButton.style.marginRight = '10px'; // Para separar los botones
-                stateButton.onclick = function() {
-                    handleCompletTask(task.id);
-                };
-
-                // Crear el botón de modificar
-                var updateButton = document.createElement('ons-icon');
-                updateButton.setAttribute('icon', 'fa-cog');
-                updateButton.style.color = 'blue';
-                updateButton.onclick = function() {
-                    // mandamos los campos de titulo y descripcion a la ventana modal
-
-                    //traemos el id
-                    id = task.id;
-                    console.log(id);
-                    document.getElementById("task-title").value = task.title;
-                    document.getElementById("task-description").value = task.description;
-                    document.getElementById("task-date").value = task.date;
-
-                    
-                    //le cambiamos el nombre al boton
-                    document.getElementById("button-add-task").textContent = "Modificar";
-                    // mostramos la ventana modal
-                    showEditModal(id);
-                };
-
-                // Crear el botón de eliminar
-                var delbutton = document.createElement('ons-icon');
-                delbutton.setAttribute('icon', 'fa-trash'); 
-                delbutton.style.color = 'red';
-                delbutton.style.marginLeft = '10px'; // Para separar los botones
-                delbutton.onclick = function() {
-                    handleDeleteTask(task.id);
-                };
-
-                // Agregar los botones al contenedor
-                iconContainer.appendChild(stateButton);
-                iconContainer.appendChild(updateButton);
-                iconContainer.appendChild(delbutton);
-
-
-                //queda muy junto y le meto un margin de 10px y deja de listar 
-                // Agregar el contenedor al elemento de lista
-                newDiv2.appendChild(iconContainer);
-                newElement.appendChild(newDiv2);
-                list.appendChild(newElement);
-            });
-        } else {
-            // Si no hay tareas, mostrar el mensaje 'No tienes tareas'
-            var noTasksElement = document.createElement("ons-list-item");
-            noTasksElement.textContent = 'No tienes tareas';
-            list.appendChild(noTasksElement);
-        }
+        createElementsTasks(data,type);
     } catch (error) {
         console.error(error);
+    }
+}
+
+function createElementsTasks(data,type) {
+    
+    var list = document.getElementById('list_tasks');
+
+    if (data.data != undefined && data.data != null && data.data.length > 0) {
+        //filtramos para que solo muestre las tareas que no estan completadas
+
+        data.data.filter(task => task.state == type).forEach(function(task) {
+            var newElement = document.createElement("ons-list-item");
+
+            console.log(task);
+
+            var newDiv = document.createElement('div');
+            newDiv.setAttribute('class', 'left');
+            newDiv.textContent = task.title + ' - ' + task.description;
+            newElement.appendChild(newDiv);
+
+            var newDiv2 = document.createElement('div');
+            newDiv2.setAttribute('class', 'right');
+
+            // Crear un contenedor para los iconos
+            var iconContainer = document.createElement('div');
+            iconContainer.style.display = 'flex'; // Para que los iconos estén en línea
+            iconContainer.style.width= "25%"; // Para que los iconos estén en línea
+            iconContainer.style.justifyContent = 'space-between'; // Para alinear los iconos a la derecha
+            iconContainer.style.alignItems = 'center'; // Para centrar verticalmente los iconos
+
+            //crear el boton para completar la tarea 
+            var stateButton = document.createElement('ons-icon');
+            stateButton.setAttribute('icon', 'fa-check');
+            stateButton.style.color = 'green';
+            stateButton.style.marginRight = '10px'; // Para separar los botones
+            stateButton.onclick = function() {
+                handleCompletTask(task.id);
+            };
+
+            // Crear el botón de modificar
+            var updateButton = document.createElement('ons-icon');
+            updateButton.setAttribute('icon', 'fa-cog');
+            updateButton.style.color = 'blue';
+            updateButton.onclick = function() {
+                // mandamos los campos de titulo y descripcion a la ventana modal
+
+                //traemos el id
+                id = task.id;
+                console.log(id);
+                document.getElementById("task-title").value = task.title;
+                document.getElementById("task-description").value = task.description;
+                document.getElementById("task-date").value = task.date;
+
+                
+                //le cambiamos el nombre al boton
+                document.getElementById("button-add-task").textContent = "Modificar";
+                // mostramos la ventana modal
+                showEditModal(id);
+            };
+
+            // Crear el botón de eliminar
+            var delbutton = document.createElement('ons-icon');
+            delbutton.setAttribute('icon', 'fa-trash'); 
+            delbutton.style.color = 'red';
+            delbutton.style.marginLeft = '10px'; // Para separar los botones
+            delbutton.onclick = function() {
+                handleDeleteTask(task.id);
+            };
+
+            // Agregar los botones al contenedor
+            iconContainer.appendChild(stateButton);
+            iconContainer.appendChild(updateButton);
+            iconContainer.appendChild(delbutton);
+
+
+            //queda muy junto y le meto un margin de 10px y deja de listar 
+            // Agregar el contenedor al elemento de lista
+            newDiv2.appendChild(iconContainer);
+            newElement.appendChild(newDiv2);
+            list.appendChild(newElement);
+        });
+    } else {
+        // Si no hay tareas, mostrar el mensaje 'No tienes tareas'
+        var noTasksElement = document.createElement("ons-list-item");
+        noTasksElement.textContent = 'No tienes tareas';
+        list.appendChild(noTasksElement);
     }
 }
 
@@ -163,6 +180,8 @@ async function handleCreateTask() {
     const date = document.getElementById("task-date").value;
 
     if (name.trim() !== '' && description.trim() !== '' && date.trim() !== '') {
+        document.getElementById('spinner').style.display = 'block';
+        document.getElementById('textSpinner').style.display = 'block';
         getLocation(function(error, ubicacion) {
             if (error) {
                 console.error('Error al obtener la ubicación:', error);
@@ -300,7 +319,7 @@ async function handleDeleteTask(id){
 
 async function completTask(id){
     try {
-        const url = 'http://localhost:3050/api/v1/tasks/' + id;
+        const url = 'http://localhost:3050/api/v1/tasks/complete/' + id;
         const response = await fetch(url, {
             method: 'PUT',
             headers: {
@@ -319,6 +338,14 @@ async function handleCompletTask(id){
         completTask(id);
         alert("Tarea completada exitosamente");
         window.location.reload();
+    }
+}
+function clearTaskList() {
+    // Obtener la lista de tareas
+    var list = document.getElementById('list_tasks');
+    // Limpiar la lista eliminando todos los elementos hijos
+    while (list.firstChild) {
+        list.removeChild(list.firstChild);
     }
 }
 
