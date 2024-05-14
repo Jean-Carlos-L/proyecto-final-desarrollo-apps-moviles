@@ -19,50 +19,61 @@
 </head>
 
 <body>
-  <main>
-    <ons-page>
-      <ons-toolbar>
-        <div class="center">
-          <ons-segment id="segment" tabbar-id="tabbar" style="width: 200px">
-            <button id="tasksButton" class="active">Tasks</button>
-            <button id="tasksCompleteButton">Tasks Complete</button>
+  <ons-page>
+    <ons-toolbar>
+      <div class="center">
+        Tasks
+      </div>
+      <div class="right" style="margin-right: 20px;">
+        <ons-icon id="button-sign-out" icon="md-close-circle"></ons-icon>
+      </div>
+    </ons-toolbar>
+    <main>
+        <div class="d-flex justify-content-center text-center my-1">
+          <ons-segment class="w-75 mx-auto">
+            <button id="tasks-no-completed" class="active">Tasks</button>
+            <button id="tasks-completed">Tasks Complete</button>
           </ons-segment>
         </div>
-      </ons-toolbar>
-      <ons-list id="list_tasks">
-      </ons-list>
-      <ons-fab position="bottom right" style="margin-bottom: 3%;">
-        <ons-icon icon="md-plus" id="button-task-new"></ons-icon>
-      </ons-fab>
-    </ons-page>
+        <ons-list id="list_tasks">
+        </ons-list>
+        <ons-fab position="bottom right" style="margin-bottom: 5%;">
+          <ons-icon icon="md-plus" id="button-task-new"></ons-icon>
+        </ons-fab>
 
-    <ons-modal direction="up">
-      <form class="form-task">
-        <div class="form-group">
-          <ons-input id="task-title" modifier="underbar" placeholder="Title task" type="text" float></ons-input>
-        </div>
-        <div class="form-group">
-          <ons-input id="task-description" modifier="underbar" placeholder="Description" type="text" float></ons-input>
-        </div>
-        <div class="form-group">
-          <ons-input id="task-date" modifier="underbar" placeholder="Date" type="date" float></ons-input>
-        </div>
-         <div class="form-group" style="position: relative;">
-          <ons-progress-circular indeterminate id="spinner" style="display: none; margin-bottom: 30px;"></ons-progress-circular>
-          <p id="textSpinner" style="display: none; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);">Se está creando la tarea</p>
-        </div>         
-        <div class="mb-1">
-          <ons-button type="submit" id="button-add-task" style="text-transform: none;">Save task</ons-button>
-        </div>
-      </form>
-    </ons-modal>
-  </main>
+      <ons-modal direction="up">
+        <form class="form-task">
+          <div class="form-group">
+            <ons-input id="task-title" modifier="underbar" placeholder="Title task" type="text" float></ons-input>
+          </div>
+          <div class="form-group">
+            <ons-input id="task-description" modifier="underbar" placeholder="Description" type="text" float></ons-input>
+          </div>
+          <div class="form-group">
+            <ons-input id="task-date" modifier="underbar" placeholder="Date" type="date" float></ons-input>
+          </div>
+          <div class="form-group" style="position: relative;">
+            <ons-progress-circular indeterminate id="spinner" style="display: none; margin-bottom: 30px;"></ons-progress-circular>
+            <p id="textSpinner" style="display: none; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);">Se está creando la tarea</p>
+          </div>         
+          <div class="mb-1">
+            <ons-button type="submit" id="button-add-task" style="text-transform: none;">Save task</ons-button>
+          </div>
+        </form>
+      </ons-modal>
+    </main>
+  </ons-page>
+
 
   <div id="tabbar-container"></div>
   <script src="../cordova.js"></script>
   <script src="../js/onsenui/onsenui.min.js"></script>
-  <script src="../js/tasks.js"></script>
+  <script src="../js/onsenui/onsenui.js"></script>
+  <script src="../js/verifySession.js"></script>
+  <script src="../js/index.js"></script>
   <script src="../js/loadTabbar.js"></script>
+  <script src="../js/tasks.js"></script>
+  <script src="../js/services/task.service.js"></script>
 </body>
 
 </html>
