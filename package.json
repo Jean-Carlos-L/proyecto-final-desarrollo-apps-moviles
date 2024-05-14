@@ -19,7 +19,10 @@
   "cordova": {
     "platforms": [
       "android"
-    ]
+    ],
+    "plugins": {
+      "cordova-plugin-geolocation": {}
+    }
   },
   "dependencies": {
     "onsenui": "^2.12.8"
