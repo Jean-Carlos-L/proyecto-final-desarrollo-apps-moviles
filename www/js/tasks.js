@@ -10,9 +10,16 @@ const TASKS_STATES = {
   COMPLETED: 2,
 };
 
+const TASK_PRIORITY = {
+  'high': 1,
+  'mediu': 2,
+  'low': 3,
+};
+
 async function showTasks(type) {
   const { data: tasks } = await getTasks();
   createElementsTasks(tasks, type ?? TASKS_STATES.PENDING);
+
 }
 
 function createElementsTasks(tasks, type) {
@@ -25,11 +32,12 @@ function createElementsTasks(tasks, type) {
     return;
   }
 
+   tasks.sort((a, b) => TASK_PRIORITY[a.priority] - TASK_PRIORITY[b.priority]);
+
   tasks
     .filter((task) => task.state === type)
     .forEach(function (task) {
       var newElement = document.createElement("ons-list-item");
-
       var newDiv = document.createElement("div");
       newDiv.setAttribute("class", "left");
       newDiv.textContent = task.title + " - " + task.description;
@@ -38,7 +46,6 @@ function createElementsTasks(tasks, type) {
       var newDiv2 = document.createElement("div");
       newDiv2.setAttribute("class", "right");
 
-      // Crear un contenedor para los iconos
       var iconContainer = document.createElement("div");
       iconContainer.style.display = "flex"; // Para que los iconos estén en línea
       iconContainer.style.width = "25%"; // Para que los iconos estén en línea
@@ -112,9 +119,11 @@ function handleTaskAction() {
 const getFields = () => {
   const title = document.getElementById("task-title").value;
   const description = document.getElementById("task-description").value;
+  const priority = document.getElementById("task-priority").value;
   const date = document.getElementById("task-date").value;
+  
 
-  return { title, description, date };
+  return { title, description, priority, date };
 };
 
 const validations = () => {
@@ -136,7 +145,7 @@ const validations = () => {
 };
 
 async function handleCreateTask() {
-  const { title, description, date } = getFields();
+  const { title, description, priority, date } = getFields();
 
   if (!validations()) return;
   document.getElementById("spinner").style.display = "block";
@@ -151,6 +160,7 @@ async function handleCreateTask() {
     await createTask({
       title,
       description,
+      priority,
       // date,
       ...ubicacion,
     });
@@ -188,7 +198,7 @@ function getLocation(callback) {
 }
 
 async function handleEditTask(id) {
-  const { title, description, date } = getFields();
+  const { title, description, priority, date } = getFields();
 
   if (!validations()) return;
   document.getElementById("spinner").style.display = "block";
@@ -205,6 +215,7 @@ async function handleEditTask(id) {
       id,
       title,
       description,
+      priority,
       // date,
       ...ubicacion,
     });
@@ -235,6 +246,7 @@ function clearTaskList() {
     list.removeChild(list.firstChild);
   }
 }
+
 
 const handleChangeTypeTask = (type) => {
   clearTaskList();

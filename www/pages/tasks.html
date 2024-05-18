@@ -34,6 +34,14 @@
             <button id="tasks-no-completed" class="active">Tasks</button>
             <button id="tasks-completed">Tasks Complete</button>
           </ons-segment>
+          <div class="rigth" style="padding-left: 10px;">
+            <ons-select style="font-size: small;">
+              <option value="all">High to Low</option>
+              <option value="low">Low</option>
+              <option value="mediu">Medium</option>
+              <option value="high">High</option>
+            </ons-select>
+          </div>
         </div>
         <ons-list id="list_tasks">
         </ons-list>
@@ -48,6 +56,14 @@
           </div>
           <div class="form-group">
             <ons-input id="task-description" modifier="underbar" placeholder="Description" type="text" float></ons-input>
+          </div>
+          <!--Ahora vamos a realizar un div para select input en el cual se elegirá la prioridad-->
+          <div class="form-group">
+            <ons-select id="task-priority" modifier="underbar" float>
+              <option value="low">Low</option>
+              <option value="mediu">Medium</option>
+              <option value="high">High</option>
+            </ons-select>
           </div>
           <div class="form-group">
             <ons-input id="task-date" modifier="underbar" placeholder="Date" type="date" float></ons-input>
