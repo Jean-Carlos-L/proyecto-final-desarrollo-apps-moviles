@@ -1,8 +1,10 @@
 let modalMode;
 let idTaskUpdate;
+let currentTaskType;
 
 document.addEventListener("DOMContentLoaded", function () {
-  showTasks();
+  const prioritySelect = document.getElementById("priority-select");
+  showTasks(TASKS_STATES.PENDING, prioritySelect.value);
 });
 
 const TASKS_STATES = {
@@ -16,14 +18,23 @@ const TASK_PRIORITY = {
   'low': 3,
 };
 
-async function showTasks(type) {
+async function showTasks(type, priority) {
   const { data: tasks } = await getTasks();
-  createElementsTasks(tasks, type ?? TASKS_STATES.PENDING);
+  console.log("tasks", tasks);
+  let filteredTasks = tasks;
 
+  if (priority !== 'all') {
+    filteredTasks = tasks.filter(task => task.priority === priority);
+  }
+  console.log("filteredTasks", filteredTasks);
+  createElementsTasks(filteredTasks, type ?? TASKS_STATES.PENDING);
 }
+
 
 function createElementsTasks(tasks, type) {
   var list = document.getElementById("list_tasks");
+
+  tasks = tasks.filter((task) => task.state === type);
 
   if (!Boolean(tasks) || tasks.length === 0) {
     var noTasksElement = document.createElement("ons-list-item");
@@ -35,7 +46,6 @@ function createElementsTasks(tasks, type) {
    tasks.sort((a, b) => TASK_PRIORITY[a.priority] - TASK_PRIORITY[b.priority]);
 
   tasks
-    .filter((task) => task.state === type)
     .forEach(function (task) {
       var newElement = document.createElement("ons-list-item");
       var newDiv = document.createElement("div");
@@ -250,18 +260,23 @@ function clearTaskList() {
 
 const handleChangeTypeTask = (type) => {
   clearTaskList();
-  showTasks(type);
+  const selectedPriority = document.getElementById("priority-select").value;
+  showTasks(type, selectedPriority);
 };
 
 document
   .getElementById("tasks-completed")
-  .addEventListener("click", () =>
-    handleChangeTypeTask(TASKS_STATES.COMPLETED)
-  );
+  .addEventListener("click", () => {
+    currentTaskType = TASKS_STATES.COMPLETED;
+    handleChangeTypeTask(currentTaskType);
+  });
 
 document
   .getElementById("tasks-no-completed")
-  .addEventListener("click", () => handleChangeTypeTask(TASKS_STATES.PENDING));
+  .addEventListener("click", () => {
+    currentTaskType = TASKS_STATES.PENDING;
+    handleChangeTypeTask(currentTaskType);
+  });
 
 document
   .getElementById("button-task-new")
@@ -270,3 +285,8 @@ document
 document
   .getElementById("button-add-task")
   .addEventListener("click", handleTaskAction);
+
+document.
+  getElementById("priority-select").addEventListener("change", () => {
+    handleChangeTypeTask(currentTaskType);
+  });
