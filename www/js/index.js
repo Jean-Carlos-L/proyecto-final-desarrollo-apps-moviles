@@ -1,8 +1,5 @@
-document.addEventListener("deviceready", onDeviceReady, false);
 
-function onDeviceReady() {
-  verifySession();
-
+function createDb(){
   const db = window.sqlitePlugin.openDatabase({
     name: 'aplicacion_gestion_tareas_con_geolocalizacion.db',
     location: 'default',
@@ -28,7 +25,8 @@ function onDeviceReady() {
       user_id INTEGER NOT NULL,
       state INTEGER NOT NULL DEFAULT 1,
       created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      updated_at DATETIME DEFAULT NULL
+      updated_at DATETIME DEFAULT NULL,
+      FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE
     )`, [], function(tx, res) {
       console.log('Tabla tasks creada correctamente');
     }, function(error) {
@@ -61,18 +59,24 @@ function onDeviceReady() {
       console.error('Error al crear la tabla sync_database: ', error.message);
     });
 
-    tx.executeSql(`ALTER TABLE tasks
-      ADD CONSTRAINT tasks_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE;`, [], function(tx, res) {
-      console.log('Relación entre tasks y users creada correctamente');
-    }, function(error) {
-      console.error('Error al crear la relación entre tasks y users: ', error.message);
-    });
-
   }, function(error) {
     console.error('Error en la transacción: ', error.message);
   }, function() {
     console.log('Tablas creadas correctamente');
   });
+}
+
+createDb();
+
+
+document.addEventListener("deviceready", async function() {
+  onDeviceReady();
+}, false);
+
+
+function onDeviceReady() {
+  verifySession();
+
 }
 
 document
@@ -83,3 +87,5 @@ function handleSignOut() {
   localStorage.removeItem("user");
   window.location.href = "/pages/login.html";
 }
+
+

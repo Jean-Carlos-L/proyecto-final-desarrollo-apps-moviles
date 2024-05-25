@@ -1,3 +1,8 @@
+const db = window.sqlitePlugin.openDatabase({
+  name: 'aplicacion_gestion_tareas_con_geolocalizacion.db',
+  location: 'default',
+});
+
 const BASE_URL = "http://localhost:3050";
 
 const getToken = () => {
@@ -7,6 +12,7 @@ const getToken = () => {
 
 const getTasks = async () => {
   try {
+    if(!navigator.onLine) {
     const options = {
       method: "GET",
       headers: {
@@ -17,6 +23,9 @@ const getTasks = async () => {
     const response = await fetch(`${BASE_URL}/api/v1/tasks`, options);
     const data = await response.json();
     return data;
+  }else {
+    
+  }
   } catch (error) {
     console.error("Ocurrio un error al obtener las tareas: ", error);
   }
@@ -24,6 +33,7 @@ const getTasks = async () => {
 
 const createTask = async (task) => {
   try {
+    if(!navigator.onLine) {
     const options = {
       method: "POST",
       headers: {
@@ -35,6 +45,30 @@ const createTask = async (task) => {
     const response = await fetch(`${BASE_URL}/api/v1/tasks`, options);
     const data = await response.json();
     return data;
+  } else {
+    try {
+      db.transaction(async function (tx) {
+        const query = `
+        INSERT INTO tasks (title, description, priority, remainder, user_id)
+        VALUES (?, ?, ?, ?)
+      `;
+        tx.executeSql(query, [task.title, task.description, task.priority, task.remainder, task.user_id]);
+        console.log('Tarea creada localmente en la base de datos SQLite.');
+      });
+    } catch (error) {
+      console.log('Error al crear la tarea localmente en la base de datos SQLite: ', error.message);
+      
+    }
+    
+
+    // db.transaction(function (tx) {
+    //   tx.executeSql(`INSERT INTO sync_database (query) VALUES ('${JSON.stringify(task)}')`, [], function (tx, res) {
+    //     console.log('Tarea guardada en la base de datos local');
+    //   }, function (error) {
+    //     console.error('Error al guardar la tarea en la base de datos local: ', error.message);
+    //   });
+    // });
+  }
   } catch (error) {
     console.error("Ocurrio un error al crear la tarea: ", error);
   }
