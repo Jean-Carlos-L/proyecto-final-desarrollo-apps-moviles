@@ -64,6 +64,25 @@ function createDb(){
   }, function() {
     console.log('Tablas creadas correctamente');
   });
+
+db.transaction(function(tx) {
+  tx.executeSql('CREATE TABLE IF NOT EXISTS my_table (id INTEGER PRIMARY KEY, name TEXT)');
+  tx.executeSql('INSERT INTO my_table (name) VALUES (?)', ['John Doe'], function(tx, res) {
+      console.log('Insert successful');
+      // Retrieve data
+      tx.executeSql('SELECT * FROM my_table', [], function(tx, res) {
+          for (var i = 0; i < res.rows.length; i++) {
+              console.log('Id: ' + res.rows.item(i).id + ', Name: ' + res.rows.item(i).name);
+          }
+      });
+  }, function(error) {
+      console.log('Insert error: ' + error.message);
+  });
+}, function(error) {
+  console.log('Transaction error: ' + error.message);
+}, function() {
+  console.log('Transaction success');
+});
 }
 
 createDb();

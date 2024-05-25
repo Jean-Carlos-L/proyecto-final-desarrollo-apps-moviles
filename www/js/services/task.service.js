@@ -11,6 +11,9 @@ const getToken = () => {
 };
 
 const getTasks = async () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  console.log('token', user);
   try {
     if(!navigator.onLine) {
     const options = {
@@ -55,6 +58,23 @@ const createTask = async (task) => {
         tx.executeSql(query, [task.title, task.description, task.priority, task.remainder, task.user_id]);
         console.log('Tarea creada localmente en la base de datos SQLite.');
       });
+      db.transaction((tx) => {
+        const query = 'SELECT * FROM tasks WHERE user_id = ?';
+        tx.executeSql(query, [user.id], (tx, results) => {
+          const tasks = [];
+          for (let i = 0; i < results.rows.length; i++) {  
+            console.log('Tarea obtenida localmente:', results.rows.item(i));
+            tasks.push(results.rows.item(i));
+          }
+          console.log('Tareas obtenidas localmente:', tasks);
+          // Aquí puedes devolver o manejar las tareas según sea necesario
+        }, (error) => {
+          console.error('Ocurrió un error al obtener las tareas localmente:', error.message);
+        });
+      });
+      setTimeout(() => {
+        console.log('Tareas obtenidas localmente:', tasks);
+      }, 4000);
     } catch (error) {
       console.log('Error al crear la tarea localmente en la base de datos SQLite: ', error.message);
       
