@@ -1,10 +1,6 @@
 let modalMode;
 let idTaskUpdate;
 
-document.addEventListener("DOMContentLoaded", function () {
-  showTasks();
-});
-
 const TASKS_STATES = {
   PENDING: 1,
   COMPLETED: 2,
@@ -12,16 +8,17 @@ const TASKS_STATES = {
 
 async function showTasks(type) {
   const { data: tasks } = await getTasks();
+  console.log("tasks", tasks);
   createElementsTasks(tasks, type ?? TASKS_STATES.PENDING);
 }
 
 function createElementsTasks(tasks, type) {
-  var list = document.getElementById("list_tasks");
+  const list = getList();
 
   if (!Boolean(tasks) || tasks.length === 0) {
     var noTasksElement = document.createElement("ons-list-item");
     noTasksElement.textContent = "No tienes tareas";
-    list.appendChild(noTasksElement);
+    list?.appendChild(noTasksElement);
     return;
   }
 
@@ -52,7 +49,7 @@ function createElementsTasks(tasks, type) {
         stateButton.style.color = "green";
         stateButton.style.marginRight = "10px"; // Para separar los botones
         stateButton.onclick = function () {
-          handleCompletTask(task.id);
+          handleCompletTask(task.id_task);
         };
         iconContainer.appendChild(stateButton);
       }
@@ -67,7 +64,7 @@ function createElementsTasks(tasks, type) {
         document.getElementById("task-date").value = task.date;
 
         document.getElementById("button-add-task").textContent = "Modificar";
-        showEditModal(task.id);
+        showEditModal(task.id_task);
       };
 
       // Crear el botón de eliminar
@@ -76,7 +73,7 @@ function createElementsTasks(tasks, type) {
       delbutton.style.color = "red";
       delbutton.style.marginLeft = "10px";
       delbutton.onclick = function () {
-        handleDeleteTask(task.id);
+        handleDeleteTask(task.id_task);
       };
 
       iconContainer.appendChild(updateButton);
@@ -99,6 +96,11 @@ function showEditModal(idTask) {
   modalMode = "edit";
   idTaskUpdate = idTask;
   modal.show();
+}
+
+function closeModal() {
+  var modal = document.querySelector("ons-modal");
+  modal.hide();
 }
 
 function handleTaskAction() {
@@ -156,7 +158,8 @@ async function handleCreateTask() {
     });
 
     alert("Tarea creada exitosamente");
-    window.location.reload();
+    closeModal();
+    refreshList();
   });
 }
 
@@ -200,7 +203,6 @@ async function handleEditTask(id) {
       throw new Error("Error al obtener la ubicación:", error);
     }
 
-    console.log("ubicacion", ubicacion);
     await updateTask(id, {
       id,
       title,
@@ -210,14 +212,15 @@ async function handleEditTask(id) {
     });
 
     alert("Tarea modificada exitosamente");
-    window.location.reload();
+    closeModal();
+    refreshList();
   });
 }
 async function handleDeleteTask(id) {
   if (confirm("¿Estás seguro de eliminar la tarea?")) {
     await deleteTask(id);
     alert("Tarea eliminada exitosamente");
-    window.location.reload();
+    refreshList();
   }
 }
 
@@ -225,36 +228,28 @@ async function handleCompletTask(id) {
   if (confirm("¿La tarea está completada?")) {
     await completeTask(id);
     alert("Tarea completada exitosamente");
-    window.location.reload();
+    refreshList();
   }
 }
 
 function clearTaskList() {
-  var list = document.getElementById("list_tasks");
+  var list = getList();
   while (list.firstChild) {
     list.removeChild(list.firstChild);
   }
+}
+
+function refreshList() {
+  clearTaskList();
+  showTasks();
+}
+
+function getList() {
+  const list = document.getElementById("task-list");
+  return list;
 }
 
 const handleChangeTypeTask = (type) => {
   clearTaskList();
   showTasks(type);
 };
-
-document
-  .getElementById("tasks-completed")
-  .addEventListener("click", () =>
-    handleChangeTypeTask(TASKS_STATES.COMPLETED)
-  );
-
-document
-  .getElementById("tasks-no-completed")
-  .addEventListener("click", () => handleChangeTypeTask(TASKS_STATES.PENDING));
-
-document
-  .getElementById("button-task-new")
-  .addEventListener("click", showCreateModal);
-
-document
-  .getElementById("button-add-task")
-  .addEventListener("click", handleTaskAction);

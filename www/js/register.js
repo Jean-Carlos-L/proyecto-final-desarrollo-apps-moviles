@@ -1,29 +1,30 @@
-const getFileds = () => {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const username = document.getElementById("username").value;
+const getFiledsRegister = () => {
+  const email = document.getElementById("email-register").value;
+  const password = document.getElementById("password-register").value;
+  const username = document.getElementById("username-register").value;
 
   return { email, password, username };
 };
 
-async function handleCreateUser() {
-  const { email, password, username } = getFileds();
-
-  if (validations()) {
+const handleCreateUser = async () => {
+  const { email, password, username } = getFiledsRegister();
+  console.log("getFields()", getFiledsRegister());
+  if (validationsCreateUser()) {
     return;
   }
 
   const { message } = await createUser({ email, password, username });
   if (Boolean(message)) {
-    alert(message);
-    return window.location.replace("/pages/login.html");
+    const users = await getUsersOffline();
+    console.log("users", users);
+    return true;
   }
 
   alert(message);
-}
+};
 
-const validations = () => {
-  const { email, password, username } = getFileds();
+const validationsCreateUser = () => {
+  const { email, password, username } = getFiledsRegister();
 
   if (username === "") {
     return alert("El nombre de usuario es requerido");
@@ -37,7 +38,3 @@ const validations = () => {
     return alert("La contrasena es requerida");
   }
 };
-
-document
-  .getElementById("button-sign-up")
-  .addEventListener("click", handleCreateUser);

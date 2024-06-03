@@ -14,17 +14,21 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "cordova-android": "^12.0.1",
-    "cordova-browser": "^7.0.0"
+    "cordova-browser": "^7.0.0",
+    "cordova-sqlite-storage": "^6.1.0"
   },
   "cordova": {
     "platforms": [
       "android"
     ],
     "plugins": {
-      "cordova-plugin-geolocation": {}
+      "cordova-plugin-geolocation": {},
+      "cordova-sqlite-storage": {},
+      "cordova-plugin-network-information": {}
     }
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "onsenui": "^2.12.8"
   }
 }

@@ -1,24 +1,32 @@
 async function handleLogin() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
+  const { email, password } = getFieldsLogin();
   const { message, user, token } = await login({ email, password });
+  console.log("email", email);
+  console.log("password", password);
+  const users = await getUsersOffline();
+  console.log("users", users);
+  console.log("user", user);
+  clearFields();
   if (Boolean(token)) {
     localStorage.setItem("user", JSON.stringify({ ...user, token }));
-    return (window.location.href = "/pages/tasks.html");
+    return true;
   }
 
   alert(message);
 }
 
-function navigateToRegister() {
-  window.location.href = "/pages/register.html";
-}
+const clearFields = () => {
+  document.getElementById("email").value = "";
+  document.getElementById("password").value = "";
+};
 
-document
-  .getElementById("button-sign-up")
-  .addEventListener("click", navigateToRegister);
+const getFieldsLogin = () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-document
-  .getElementById("button-sign-in")
-  .addEventListener("click", handleLogin);
+  return { email, password };
+};
+
+const handleSignOut = () => {
+  localStorage.removeItem("user");
+};
